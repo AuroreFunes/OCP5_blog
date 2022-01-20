@@ -1,0 +1,84 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+        <!-- Post Content-->
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        {{ post.content }}
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <!-- Divider-->
+                    <hr class="my-4" />
+
+                    <!-- Comments-->
+                    <h2 class="post-title">Commentaires</h2>
+
+                    <!-- Add a comment-->
+                    {% if not session %}
+                        <p class="post-meta">Vous devez être connecté pour ajouter un commentaire.</p>
+                    {% else %}
+                        <!-- ajouter le formulaire -->
+                        <form id="comment-form" class="form-signin" method="post" 
+                            action="index.php?action=add_comment&id={{ post.id }}">
+
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Votre commentaire :</label>
+                                <textarea class="form-control" name="comment" id="comment" rows="3" required=""></textarea>
+                            </div>
+
+                            <p class="text-center">
+                                <button type="submit" class="btn btn-primary">Publier le commentaire</button>
+                            </p>
+
+                        </form>
+                    {% endif %}
+                    
+                     <!-- Divider-->
+                    <hr class="my-4" />
+
+                    <!-- Post comments-->
+                    {% if comments is not empty %}
+                        {% for comment in comments %}
+                            <div class="post-preview">
+                                <p class="post-meta">
+                                    Publié par <strong>{{ comment.author }}</strong> le 
+                                    {% if comment.modified_on is not empty %}
+                                        {{ comment.modified_on }}
+                                    {% else %}
+                                        {{ comment.created_on }}
+                                    {% endif %}
+                                </p>
+                                <p>{{ comment.comment }}</p>
+                            </div>
+                            <!-- Divider-->
+                            <hr class="my-4" />
+                        {% endfor %}
+                    {% else %}
+                        <p class="post-meta">
+                            Il n'y a pas encore de commentaire sur cet article.
+                        </p>
+                        <!-- Divider-->
+                        <hr class="my-4" />
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <!-- Pager-->
+                    <div class="d-flex justify-content-end mb-4">
+                        <a class="btn btn-primary text-uppercase" href="index.php?action=blog_list">Retour →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

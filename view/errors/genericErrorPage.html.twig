@@ -1,0 +1,17 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}DémosAF - Erreur{% endblock %}
+
+{% block content %}
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <h2>{{ title }}</h2>
+                    {% for message in messages %}
+                        <p>
+                            {{ message }}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+{% endblock %}
