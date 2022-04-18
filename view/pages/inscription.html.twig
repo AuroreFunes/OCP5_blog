@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <form id="connexion-form" class="form-signin" method="post" action="index.php?action=connection">
+                        <div class="form-label-group">
+                            <label for="pseudo">Votre pseudo :</label>
+                            <input type="text" id="pseudo" class="form-control" placeholder="Votre pseudonyme" required="" autofocus="">
+                        </div>
+
+                        <div class="form-label-group">
+                            <label for="mail">Votre e-mail :</label>
+                            <input type="email" id="mail" class="form-control" placeholder="Votre adresse e-mail" required="" autofocus="">
+                        </div>
+
+                        <div class="form-label-group">
+                            <label for="pwd">Mot de passe :</label>
+                            <input type="password" id="pwd" class="form-control" placeholder="Votre mot de passe" required="">
+                        </div>
+
+                        <div class="form-label-group">
+                            <label for="pwd_confirm">Confirmez le mot de passe :</label>
+                            <input type="password" id="pwd_confirm" class="form-control" placeholder="Confirmez votre mot de passe" required="">
+                        </div>
+
+                        <p class="text-center">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">S'inscrire</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}
