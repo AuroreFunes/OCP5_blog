@@ -1,6 +1,8 @@
 {
     "require": {
         "twig/twig": "^1.42",
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
+        "vlucas/phpdotenv": "^4.2",
+        "friendsofphp/php-cs-fixer": "^2.19"
     }
 }

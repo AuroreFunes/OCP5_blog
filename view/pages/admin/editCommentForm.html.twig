@@ -1,0 +1,50 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}DémosAF - Administration{% endblock %}
+
+{% block content %}
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <form id="edit-comment-form" class="form-signin" method="post" 
+                        action="index.php?action=admin&req=edit_comment_send&id={{ comment.id }}">
+                        <p>
+                            Publié le : {{ comment.created_on|date("d/m/Y à H\\hi\\m\\i\\n") }}<br />
+                            {% if comment.modified_on is not empty %}
+                                Modifié le : {{ comment.modified_on|date("d/m/Y à H\\hi\\m\\i\\n") }}<br />
+                            {% endif %}
+                            Auteur : {{ comment.author }}<br />
+                            Billet de blog :
+                            <a href="index.php?action=show_post&id={{ comment.blog_id }}">{{ comment.blog_title }}</a>.
+                        </p>
+                        <div class="mb-3 form-label-group">
+                            <label for="comment">Contenu du commentaire :</label>
+                            <textarea class="form-control" name="comment" id="comment" rows="5" 
+                                required="">{{ comment.comment }}</textarea>
+                        </div>
+
+                        <div class="mb-3 form-label-group">
+                            <label for="admin_message" class="form-label">Commentaire de l'administrateur :</label>
+                            <textarea class="form-control" name="admin_message" id="admin_message" rows="2" maxlength="255" 
+                                aria-describedby="admin_message-help">{{ comment.validation_comment }}</textarea>
+                            <div id="admin_message_help" class="form-text">Commentaire facultatif (255 caractères).</div>
+                        </div>
+
+                        <div class="mb-3 form-label-group">
+                            <label for="comment_status" class="form-label">Etat du commentaire :</label>
+                            <select name="comment_status" id="comment_status" class="form-select">
+                                <option value="null">A traiter</option>
+                                <option value="true">Validé</option>
+                                <option value="false">Refusé</option>
+                            </select>
+                        </div>
+                        
+                        <input type="hidden" name="token" value="{{ token }}" />
+
+                        <p class="text-center">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Enregistrer</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

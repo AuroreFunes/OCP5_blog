@@ -1,0 +1,82 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}DémosAF - Accueil/Contact{% endblock %}
+
+{% block content %}
+        <div class="container">
+            <div class="row justify-content-center align-items-center mb-3">
+                <div class="col-3 text-center">
+                    <img src="public/assets/img/photo.jpg" class="img-fluid" alt="Photo" />
+                </div>
+                <div class="col-7 text-center">
+                    <h2>Aurore Funès</h2>
+                    <h3 class="mb-3">Engagée et passionnée.</h3>
+
+                    <ul class="list-inline text-center mt-5">
+                        <li class="list-inline-item">
+                            <a href="https://linkedin.com/in/aurorefunes/">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-linkedin-in fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="https://github.com/AuroreFunes">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <p class="mb-3 text-muted text-center">
+                        <a href="public/assets/file/cv_aurore-funes_developpeur-php.pdf">Voir mon parcours</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                {% if messages is not empty %}
+                    <div class="col-md-10 col-lg-8 col-xl-7 mb-3 alert {{ messageClass }}">
+                        {% for message in messages %}
+                            {{ message }}<br />
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <h2>Me contacter ?</h2>
+
+                    <form id="contact-form" class="form-signin" method="post" action="index.php?action=send_mail">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="firstname">Votre prénom :</label>
+                                <input type="text" name="firstname" id="firstname" class="form-control" placeholder="Prénom" required="">
+                            </div>
+                            <div class="col">
+                                <label for="name">Votre nom :</label>
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Nom" required="">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="mail">Votre e-mail :</label>
+                            <input type="mail" name="mail" id="mail" class="form-control" placeholder="E-mail" required="">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Votre message :</label>
+                            <textarea class="form-control" name="message" id="message" rows="3" required=""></textarea>
+                        </div>
+
+                        <input type="hidden" name="token" value="{{ token }}" />
+
+                        <p class="text-center">
+                            <button type="submit" class="btn btn-primary">M'envoyer votre message</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

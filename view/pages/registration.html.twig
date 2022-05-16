@@ -1,0 +1,55 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                {% if messages is not empty %}
+                    <div class="col-md-10 col-lg-8 col-xl-7 mb-3 alert alert-danger">
+                        {% for message in messages %}
+                            {{ message }}<br />
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <form id="registration-form" class="form-signin" method="post" action="index.php?action=submit_registration">
+                        <div class="mb-3 form-label-group">
+                            <label for="username">Votre pseudo :</label>
+                            <input type="text" name="username" id="username" class="form-control" 
+                                placeholder="Votre pseudonyme" required="" autofocus="" aria-describedby="usernameHelp"
+                                {% if datas.username is not empty %}value="{{ datas.username }}"{% endif %} />
+                            <div id="usernameHelp" class="form-text">Au moins trois caractères.
+                                Ne peut contenir que des lettres, chiffres, ., - ou _.</div>
+                        </div>
+
+                        <div class="mb-3 form-label-group">
+                            <label for="mail">Votre e-mail :</label>
+                            <input type="email" name="mail" id="mail" class="form-control" 
+                                placeholder="Votre adresse e-mail" required=""
+                                {% if datas.mail is not empty %}value="{{ datas.mail }}"{% endif %} />
+                        </div>
+
+                        <div class="mb-3 form-label-group">
+                            <label for="pwd">Mot de passe :</label>
+                            <input type="password" name="pwd" id="pwd" class="form-control" 
+                            placeholder="Votre mot de passe" required="" aria-describedby="pwdHelp" />
+                            <div id="pwdHelp" class="form-text">Au moins 8 caractères dont une minuscule, 
+                                une majuscule, un chiffre et un caractère spécial.</div>
+                        </div>
+
+                        <div class="mb-3 form-label-group">
+                            <label for="pwd_confirm">Confirmez le mot de passe :</label>
+                            <input type="password" name="pwd_confirm" id="pwd_confirm" class="form-control" 
+                                placeholder="Confirmez votre mot de passe" required="" />
+                        </div>
+
+                        <input type="hidden" name="token" value="{{ token }}" />
+
+                        <p class="text-center">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">S'inscrire</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

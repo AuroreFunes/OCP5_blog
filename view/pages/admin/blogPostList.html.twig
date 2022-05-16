@@ -1,0 +1,40 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}DémosAF - Administration{% endblock %}
+
+{% block content %}
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Auteur</th>
+                            <th>Publié le</th>
+                            <th>Modifié le</th>
+                            <th>Titre</th>
+                            <th>Modifier</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for blog in blogPosts %}
+                        <tr>
+                            <td>{{ blog.author }}</td>
+                            <td>{{ blog.created_on }}</td>
+                            <td>{% if blog.modified_on is not empty %}{{ blog.modified_on }}{% endif %}</td>
+                            <td style="width: 100%;">{{ blog.title }}</td>
+                            <td>
+                                <a href="index.php?action=admin&req=edit_blog_form&id={{ blog.id }}" class="btn btn-primary">
+                                    Modifier</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-end mb-4">
+                    <a class="btn btn-primary" href="index.php?action=admin&req=index">Retour →</a>
+                </div>
+
+            </div>
+        </div>
+{% endblock %}

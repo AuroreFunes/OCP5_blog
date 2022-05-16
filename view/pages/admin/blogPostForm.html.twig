@@ -1,0 +1,46 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}DémosAF - Administration{% endblock %}
+
+{% block content %}
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                {% if messages is not empty %}
+                    <div class="col-md-10 col-lg-8 col-xl-7 mb-3 alert alert-danger">
+                        {% for message in messages %}
+                            {{ message }}<br />
+                    {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <form id="new-blog-form" class="form-signin" method="post" 
+                        action="index.php?action=admin&req=new_blog_send">
+                        <div class="mb-3 form-label-group">
+                            <label for="title">Titre du billet de blog :</label>
+                            <input type="text" name="title" id="title" class="form-control" placeholder="Titre" 
+                                maxlength="255" required="" autofocus="" />
+                        </div>
+
+                        <div class="mb-3 form-label-group">
+                            <label for="caption" class="form-label">Chapô du billet :</label>
+                            <textarea class="form-control" name="caption" id="caption" rows="2" 
+                                maxlength="255" required="" aria-describedby="captioneHelp"></textarea>
+                            <div id="usernameHelp" class="form-text">Limité à 255 caractères.</div>
+                        </div>
+
+                        <div class="mb-3 form-label-group">
+                            <label for="content" class="form-label">Contenu du billet :</label>
+                            <textarea class="form-control" name="content" id="content" rows="5" 
+                                required=""></textarea>
+                        </div>
+                        
+                        <input type="hidden" name="token" value="{{ token }}" />
+
+                        <p class="text-center">
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Poster le billet</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}
