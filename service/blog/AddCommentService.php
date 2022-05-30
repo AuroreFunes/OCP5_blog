@@ -2,12 +2,12 @@
 
 namespace AF\OCP5\Service\Blog;
 
-require_once('service/ServiceHelper.php');
-require_once('entity/Blog.php');
-require_once('model/BlogManager.php');
-require_once('entity/BlogComment.php');
-require_once('model/BlogCommentManager.php');
-require_once('error/Http500Exception.php');
+require_once 'service/ServiceHelper.php';
+require_once 'entity/Blog.php';
+require_once 'model/BlogManager.php';
+require_once 'entity/BlogComment.php';
+require_once 'model/BlogCommentManager.php';
+require_once 'error/Http500Exception.php';
 
 use AF\OCP5\Service\ServiceHelper;
 use AF\OCP5\Entity\Blog;

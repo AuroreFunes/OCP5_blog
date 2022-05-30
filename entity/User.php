@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Entity;
 
-require_once('entity/EntityFeature.php');
+require_once 'entity/EntityFeature.php';
 
 class User
 {
@@ -23,8 +23,8 @@ class User
         return $this->_id;
     }
 
-    protected function setId($id) {
-        $this->_id = $id;
+    protected function setId($userId) {
+        $this->_id = $userId;
         return $this;
     }
 

@@ -2,12 +2,12 @@
 
 namespace AF\OCP5\Service;
 
-require_once('entity/User.php');
-require_once('traits/UserTrait.php');
-require_once('model/UserManager.php');
+require_once 'entity/User.php';
+require_once 'traits/UserTrait.php';
+require_once 'model/UserManager.php';
 
-require_once('entity/UserSession.php');
-require_once('model/UserSessionManager.php');
+require_once 'entity/UserSession.php';
+require_once 'model/UserSessionManager.php';
 
 use AF\OCP5\Entity\User;
 use AF\OCP5\Traits\UserTrait;

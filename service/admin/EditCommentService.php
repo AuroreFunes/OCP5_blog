@@ -2,8 +2,8 @@
 
 namespace AF\OCP5\Service\Admin;
 
-require_once('service/admin/AdminHelper.php');
-require_once('traits/BlogPostTrait.php');
+require_once 'service/admin/AdminHelper.php';
+require_once 'traits/BlogPostTrait.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
 use AF\OCP5\Entity\User;

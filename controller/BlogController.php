@@ -2,11 +2,11 @@
 
 namespace AF\OCP5\Controller;
 
-require_once('error/Http204Exception.php');
-require_once('controller/DefaultController.php');
-require_once('model/BlogManager.php');
-require_once('service/blog/ShowPostService.php');
-require_once('service/blog/AddCommentService.php');
+require_once 'error/Http204Exception.php';
+require_once 'controller/DefaultController.php';
+require_once 'model/BlogManager.php';
+require_once 'service/blog/ShowPostService.php';
+require_once 'service/blog/AddCommentService.php';
 
 use \AF\OCP5\Error\Http204Exception;
 use \AF\OCP5\Controller\DefaultController;
@@ -34,10 +34,10 @@ class BlogController extends DefaultController {
                                 ]);
     }
 
-    public function showPost(int $id, string $token)
+    public function showPost(int $postId, string $token)
     {
         $service = new ShowPostService();
-        $service->showPost($id);
+        $service->showPost($postId);
 
         if (false === $service->getStatus()) {
             // no data

@@ -2,9 +2,9 @@
 
 namespace AF\OCP5\Controller;
 
-require_once('controller/DefaultController.php');
-require_once('traits/UserTrait.php');
-require_once('service/User/SendMailService.php');
+require_once 'controller/DefaultController.php';
+require_once 'traits/UserTrait.php';
+require_once 'service/User/SendMailService.php';
 
 
 use \AF\OCP5\Controller\DefaultController;

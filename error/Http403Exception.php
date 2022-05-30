@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Error;
 
-require_once('error/ErrorFeature.php');
+require_once 'error/ErrorFeature.php';
 
 class Http403Exception extends \RuntimeException
 {

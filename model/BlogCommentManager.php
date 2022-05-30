@@ -2,8 +2,8 @@
 
 namespace AF\OCP5\Model;
 
-require_once("Manager.php");
-require_once("entity/BlogComment.php");
+require_once "Manager.php";
+require_once "entity/BlogComment.php";
 
 use AF\OCP5\Entity\BlogComment;
 
@@ -80,7 +80,7 @@ class BlogCommentManager extends Manager {
         return $comments->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findCommentById(int $id)
+    public function findCommentById(int $commentId)
     {
         $comment = $this->db->prepare(
             'SELECT 
@@ -97,7 +97,7 @@ class BlogCommentManager extends Manager {
             INNER JOIN blog_post AS b ON c.post_id = b.id
             WHERE c.id = ?');
 
-        $comment->execute([$id]);
+        $comment->execute([$commentId]);
         return $comment->fetch(\PDO::FETCH_ASSOC);
     }
 

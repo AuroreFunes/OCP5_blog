@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Service\Admin;
 
-require_once('service/admin/AdminHelper.php');
+require_once 'service/admin/AdminHelper.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
 use AF\OCP5\Model\BlogCommentManager;

@@ -2,12 +2,12 @@
 
 namespace AF\OCP5\Controller;
 
-require_once('controller/DefaultController.php');
-require_once('service/user/RegistrationService.php');
-require_once('service/user/ConnectionService.php');
-require_once('service/user/LogoutService.php');
-require_once('service/user/ChangePasswordService.php');
-require_once('error/Http405Exception.php');
+require_once 'controller/DefaultController.php';
+require_once 'service/user/RegistrationService.php';
+require_once 'service/user/ConnectionService.php';
+require_once 'service/user/LogoutService.php';
+require_once 'service/user/ChangePasswordService.php';
+require_once 'error/Http405Exception.php';
 
 use \AF\OCP5\Controller\DefaultController;
 use AF\OCP5\Service\User\RegistrationService;
