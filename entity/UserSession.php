@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Entity;
 
-require_once('entity/EntityFeature.php');
+require_once 'entity/EntityFeature.php';
 
 class UserSession
 {
@@ -27,8 +27,8 @@ class UserSession
         return $this->_ip_address;
     }
 
-    public function setIpAddress($ip) {
-        $this->_ip_address = $ip;
+    public function setIpAddress($ipAddress) {
+        $this->_ip_address = $ipAddress;
         return $this;
     }
 

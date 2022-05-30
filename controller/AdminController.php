@@ -2,17 +2,17 @@
 
 namespace AF\OCP5\Controller;
 
-require_once('controller/DefaultController.php');
-require_once('service/admin/CheckAdminAccessService.php');
-require_once('service/admin/CreateBlogPostService.php');
-require_once('service/admin/ShowBlogListService.php');
-require_once('service/admin/ShowEditBlogFormService.php');
-require_once('service/admin/EditBlogService.php');
-require_once('service/admin/DeleteBlogService.php');
-require_once('service/admin/ShowCommentsListService.php');
-require_once('service/admin/ShowEditCommentFormService.php');
-require_once('service/admin/EditCommentService.php');
-require_once('traits/UserTrait.php');
+require_once 'controller/DefaultController.php';
+require_once 'service/admin/CheckAdminAccessService.php';
+require_once 'service/admin/CreateBlogPostService.php';
+require_once 'service/admin/ShowBlogListService.php';
+require_once 'service/admin/ShowEditBlogFormService.php';
+require_once 'service/admin/EditBlogService.php';
+require_once 'service/admin/DeleteBlogService.php';
+require_once 'service/admin/ShowCommentsListService.php';
+require_once 'service/admin/ShowEditCommentFormService.php';
+require_once 'service/admin/EditCommentService.php';
+require_once 'traits/UserTrait.php';
 
 use \AF\OCP5\Controller\DefaultController;
 use AF\OCP5\Error\Http403Exception;

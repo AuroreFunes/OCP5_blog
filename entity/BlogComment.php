@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Entity;
 
-require_once('entity/EntityFeature.php');
+require_once 'entity/EntityFeature.php';
 
 class BlogComment
 {
@@ -22,8 +22,8 @@ class BlogComment
         return $this->_id;
     }
 
-    protected function setId($id) {
-        $this->_id = $id;
+    protected function setId($commentId) {
+        $this->_id = $commentId;
         return $this;
     }
 

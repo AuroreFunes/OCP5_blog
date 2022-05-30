@@ -2,11 +2,11 @@
 
 namespace AF\OCP5\Service\User;
 
-require_once('service/ServiceHelper.php');
-require_once('entity/User.php');
-require_once('traits/UserTrait.php');
-require_once('model/UserManager.php');
-require_once('error/Http500Exception.php');
+require_once 'service/ServiceHelper.php';
+require_once 'entity/User.php';
+require_once 'traits/UserTrait.php';
+require_once 'model/UserManager.php';
+require_once 'error/Http500Exception.php';
 
 use AF\OCP5\Service\ServiceHelper;
 use AF\OCP5\Entity\User;

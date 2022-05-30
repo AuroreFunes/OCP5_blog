@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Error;
 
-require_once('error/ErrorFeature.php');
+require_once 'error/ErrorFeature.php';
 
 class Http405Exception extends \RuntimeException
 {

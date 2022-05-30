@@ -4,19 +4,19 @@ session_start();
 
 require __DIR__ . '/vendor/autoload.php';
 
-require_once('error/NotImplementedException.php');
-require_once('error/Http204Exception.php');
-require_once('error/Http400Exception.php');
-require_once('error/Http403Exception.php');
-require_once('error/Http404Exception.php');
-require_once('error/Http405Exception.php');
-require_once('error/Http500Exception.php');
+require_once 'error/NotImplementedException.php';
+require_once 'error/Http204Exception.php';
+require_once 'error/Http400Exception.php';
+require_once 'error/Http403Exception.php';
+require_once 'error/Http404Exception.php';
+require_once 'error/Http405Exception.php';
+require_once 'error/Http500Exception.php';
 
-require_once('traits/UserTrait.php');
-require_once('controller/IndexController.php');
-require_once('controller/BlogController.php');
-require_once('controller/UserController.php');
-require_once('controller/AdminController.php');
+require_once 'traits/UserTrait.php';
+require_once 'controller/IndexController.php';
+require_once 'controller/BlogController.php';
+require_once 'controller/UserController.php';
+require_once 'controller/AdminController.php';
 
 
 use AF\OCP5\Error\NotImplementedException;

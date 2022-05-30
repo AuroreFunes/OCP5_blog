@@ -2,8 +2,8 @@
 
 namespace AF\OCP5\Model;
 
-require_once("Manager.php");
-require_once("entity/UserSession.php");
+require_once 'Manager.php';
+require_once 'entity/UserSession.php';
 
 use AF\OCP5\Entity\UserSession;
 

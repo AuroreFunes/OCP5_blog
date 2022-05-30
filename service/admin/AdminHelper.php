@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Service\Admin;
 
-require_once('service/ServiceHelper.php');
+require_once 'service/ServiceHelper.php';
 
 use AF\OCP5\Service\ServiceHelper;
 

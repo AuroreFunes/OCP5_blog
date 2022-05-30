@@ -2,8 +2,8 @@
 
 namespace AF\OCP5\Model;
 
-require_once("Manager.php");
-require_once("entity/User.php");
+require_once 'Manager.php';
+require_once 'entity/User.php';
 
 use AF\OCP5\Entity\User;
 
@@ -44,7 +44,7 @@ class UserManager extends Manager {
                               ':id'         => $user->getId()]);
     }
 
-    public function findUserById(int $id)
+    public function findUserById(int $userId)
     {
         $user = $this->db->prepare(
             'SELECT id, username, email, created_on, deleted_on, role, is_active
@@ -52,7 +52,7 @@ class UserManager extends Manager {
                 WHERE id LIKE :id'
             );
 
-        $user->execute([':id' => $id]);
+        $user->execute([':id' => $userId]);
 
         return $user->fetch(\PDO::FETCH_ASSOC);
     }

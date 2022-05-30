@@ -2,9 +2,9 @@
 
 namespace AF\OCP5\Service\Blog;
 
-require_once('service/ServiceHelper.php');
-require_once('model/BlogManager.php');
-require_once('model/BlogCommentManager.php');
+require_once 'service/ServiceHelper.php';
+require_once 'model/BlogManager.php';
+require_once 'model/BlogCommentManager.php';
 
 use \AF\OCP5\Service\ServiceHelper;
 use \AF\OCP5\Model\BlogManager;
