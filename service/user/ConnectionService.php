@@ -13,6 +13,7 @@ use AF\OCP5\Entity\User;
 use AF\OCP5\Entity\UserSession;
 use AF\OCP5\Traits\UserTrait;
 use AF\OCP5\Error\Http500Exception;
+use AF\OCP5\Service\SessionService;
 
 class ConnectionService extends ServiceHelper
 {
@@ -27,17 +28,17 @@ class ConnectionService extends ServiceHelper
     private $tmpUser;
     private $tmpPwd;
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
     }
 
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function connectUser(array $formDatas)
+    public function     connectUser()
     {
-        if (false === $this->checkParameters($formDatas)) {
+        if (false === $this->checkParameters()) {
             return $this;
         }
         
@@ -105,19 +106,19 @@ class ConnectionService extends ServiceHelper
     // ******************************************************************
     // * CHECK PARAMETERS
     // ******************************************************************
-    private function checkParameters(array $formDatas)
+    private function checkParameters()
     {
-        if (!isset($formDatas['username']) || empty($formDatas['username'])) {
+        if (null === $this->request->getPost('username') || empty($this->request->getPost('username'))) {
             array_push($this->errMessages, self::ERR_FORM_EMPTY);
             return false;
         }
-        $this->funArgs['username'] = $formDatas['username'];
+        $this->funArgs['username'] = $this->request->getPost('username');
 
-        if (!isset($formDatas['pwd']) || empty($formDatas['pwd'])) {
+        if (null === $this->request->getPost('pwd') || empty($this->request->getPost('pwd'))) {
             array_push($this->errMessages, self::ERR_FORM_EMPTY);
             return false;
         }
-        $this->tmpPwd = $formDatas['pwd'];
+        $this->tmpPwd = $this->request->getPost('pwd');
 
         return true;
     }

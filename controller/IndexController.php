@@ -21,34 +21,34 @@ class IndexController extends DefaultController {
     {
         // CSRF token
         $token = UserTrait::generateSessionToken();
-        $_SESSION['token'] = $token;
+        $this->session->setSession('token', $token);
 
         $template = $this->twig->load('pages/index.html.twig');
         echo $template->render(['headerStyle'  => 'background-image: url(\'public/assets/img/home-bg.jpg\');',
                                  'pageTitle'    => 'DémosAF',
                                  'pageSubTitle' => 'Bienvenue sur mon site de démos',
-                                 'session'      => $_SESSION,
+                                 'session'      => $this->session->get(),
                                  'token'        => $token
                                 ]);
     }
 
-    public function sendContactMail(array $sessionInfos, array $formInfos)
+    public function sendContactMail()
     {
-        $mailService = new SendMailService();
-        $mailService->sendMail($sessionInfos, $formInfos);
-
         // new CSRF token
-        $token = UserTrait::generateSessionToken();
-        $_SESSION['token'] = $token;
+        // $token = UserTrait::generateSessionToken();
+        // $this->session->setSession('token', $token);
+        
+        $mailService = new SendMailService($this->session);
+        $mailService->sendMail();
 
         $template = $this->twig->load('pages/index.html.twig');
-        echo $template->render(['headerStyle'  => 'background-image: url(\'public/assets/img/home-bg.jpg\');',
+        echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/home-bg.jpg\');',
                                  'pageTitle'    => 'DémosAF',
                                  'pageSubTitle' => 'Bienvenue sur mon site de démos',
-                                 'session'      => $_SESSION,
-                                 'token'        => $token,
+                                 'session'      => $this->session->get(),
+                                 'token'        => $this->session->getSession('token'),
                                  'messages'     => $mailService->getErrorsMessages(),
-                                 'messageClass'    => $mailService->getStatus() ? 'alert-success' : 'alert-danger'
+                                 'messageClass' => $mailService->getStatus() ? 'alert-success' : 'alert-danger'
                                 ]);
     }
 

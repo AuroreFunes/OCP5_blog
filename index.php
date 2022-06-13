@@ -4,6 +4,9 @@ session_start();
 
 require __DIR__ . '/vendor/autoload.php';
 
+require 'service/SessionService.php';
+require 'service/RequestService.php';
+
 require_once 'error/NotImplementedException.php';
 require_once 'error/Http204Exception.php';
 require_once 'error/Http400Exception.php';
@@ -26,6 +29,9 @@ use AF\OCP5\Error\Http403Exception;
 use AF\OCP5\Error\Http404Exception;
 use AF\OCP5\Error\Http405Exception;
 use AF\OCP5\Error\Http500Exception;
+
+use AF\OCP5\Service\SessionService;
+use AF\OCP5\Service\RequestService;
 
 use AF\OCP5\Traits\UserTrait;
 use AF\OCP5\Controller\IndexController;
@@ -56,7 +62,7 @@ try
 
                 case "send_mail":
                     // send mail from contact form
-                    $indexController->sendContactMail($_SESSION, $_POST);
+                    $indexController->sendContactMail();
                     //throw new NotImplementedException(NotImplementedException::DEFAULT_MESSAGE); // TODO
                     break;
 
@@ -74,175 +80,48 @@ try
                         break;
                     }
 
-                    // CSRF token (for add comment)
-                    $token = UserTrait::generateSessionToken();
-                    $_SESSION['token'] = $token;
-
-                    $blogController->showPost((int)$_GET['id'], $token);
+                    $blogController->showPost((int)$_GET['id']);
                     break;
 
                 case "add_comment":
-                    // user can add one comment only if he is logged in
-                    if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])
-                        || !isset($_SESSION['username']) || empty($_SESSION['username'])
-                    ) {
-                        throw new Http403Exception(Http403Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
                     if (false === filter_var($_GET['id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
                         // unvalid parameters
                         throw new Http400Exception(Http400Exception::DEFAULT_MESSAGE);
                         break;
                     }
 
-                    // check CSRF token
-                    if (!isset($_SESSION['token']) || !isset($_POST['token'])
-                        || $_SESSION['token'] != $_POST['token']
-                    ) {
-                        session_destroy();
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-                    
-                    if (!isset($_POST['comment']) || empty($_POST['comment'])) {
-                        throw new Http400Exception(["Le commentaire ne peut pas être vide."]);
-                        break;
-                    }
-
-                    $blogController->addComment($_GET['id'], $_POST, $_SESSION);
+                    $blogController->addComment($_GET['id']);
                     break;
 
                 // ******************************************************************
-                // * USERS 
+                // * USERS
                 // ******************************************************************
                 case 'connection':
-                    // show connection form only if the user is not logged in
-                    if (isset($_SESSION['username']) || isset($_SESSION['user_id'])) {
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    // CSRF token
-                    $token = UserTrait::generateSessionToken();
-                    $_SESSION['token'] = $token;
-
-                    $userController->showConnectionForm($token);
+                    $userController->showConnectionForm();
                     break;
 
                 case 'submit_connection':
-                    // show connection form only if the user is not logged in
-                    if (isset($_SESSION['username']) || isset($_SESSION['user_id'])) {
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    // check CSRF token
-                    if (!isset($_SESSION['token']) || !isset($_POST['token'])
-                        || $_SESSION['token'] != $_POST['token']
-                    ) {
-                        session_destroy();
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    // all fields in the form must be completed
-                    if (isset($_POST['username']) && !empty($_POST['username'])
-                        && isset($_POST['pwd']) && !empty($_POST['pwd'])
-                    ) {
-                        $userController->userConnection($_POST);
-                    } else {
-                        // new CSRF token
-                        $token = UserTrait::generateSessionToken();
-                        $_SESSION['token'] = $token;
-
-                        $userController->showConnectionForm($token);
-                    }
-                    
+                    $userController->userConnection();
                     break;
 
                 case 'registration':
-                    // show registration form only if the user is not logged in
-                    if (isset($_SESSION['username']) || isset($_SESSION['user_id'])) {
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    // CSRF token
-                    $token = UserTrait::generateSessionToken();
-                    $_SESSION['token'] = $token;
-
-                    $userController->showRegistrationForm($token);
+                    $userController->showRegistrationForm();
                     break;
 
                 case 'submit_registration':
-                    // show registration form only if the user is not logged in
-                    if (isset($_SESSION['username']) || isset($_SESSION['user_id'])) {
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    // check CSRF token
-                    if (!isset($_SESSION['token']) || !isset($_POST['token'])
-                        || $_SESSION['token'] != $_POST['token']
-                    ) {
-                        session_destroy();
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    // all fields in the form must be completed
-                    if (isset($_POST['username']) && !empty($_POST['username'])
-                        && isset($_POST['mail']) && !empty($_POST['mail'])
-                        && isset($_POST['pwd']) && !empty($_POST['pwd'])
-                        && isset($_POST['pwd_confirm']) && !empty($_POST['pwd_confirm'])
-                    ) {
-                        $userController->userRegistration($_POST);
-                    } else {
-                        // new CSRF token
-                        $token = UserTrait::generateSessionToken();
-                        $_SESSION['token'] = $token;
-
-                        $userController->showRegistrationForm($token);
-                    }
-
+                    $userController->userRegistration();
                     break;
                 
                 case 'logout':
-                    // error if the user is not logged in
-                    if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    $userController->userLogout($_SESSION);
-
+                    $userController->userLogout();
                     break;
 
                 case 'my_profile':
-                    // error if the user is not logged in
-                    if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    $userController->showProfileIndex($_SESSION);
+                    $userController->showProfileIndex();
                     break;
 
                 case 'change_password':
-                    // error if the user is not logged in
-                    if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-                        throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
-                        break;
-                    }
-
-                    if (empty($_POST)) {
-                        // new CSRF token
-                        $token = UserTrait::generateSessionToken();
-                        $_SESSION['token'] = $token;
-                    }
-                    
-                    $userController->changePassword($_SESSION, $_POST);
+                    $userController->changePassword();
                     break;
                 
                 case 'show_my_comments':
@@ -256,19 +135,19 @@ try
                     if (isset($_GET['req']) && !empty($_GET['req'])) {
                         switch ($_GET['req']) {
                             case 'index':
-                                $adminController->showAdminIndex($_SESSION);
+                                $adminController->showAdminIndex();
                                 break;
 
                             case 'blog_list':
-                                $adminController->showBlogList($_SESSION);
+                                $adminController->showBlogList();
                                 break;
 
                             case 'new_blog_form':
-                                $adminController->showBlogForm($_SESSION);
+                                $adminController->showBlogForm();
                                 break;
                             
                             case 'new_blog_send':
-                                $adminController->createNewBlogPost($_SESSION, $_POST);
+                                $adminController->createNewBlogPost();
                                 break;
 
                             case 'edit_blog_form' :
@@ -284,7 +163,7 @@ try
                                     break;
                                 }
 
-                                $adminController->showEditBlogForm($_SESSION, $_GET['id']);
+                                $adminController->showEditBlogForm($_GET['id']);
 
                                 break;
 
@@ -301,7 +180,7 @@ try
                                     break;
                                 }
 
-                                $adminController->editBlogPost($_SESSION, $_POST, $_GET['id']);
+                                $adminController->editBlogPost($_GET['id']);
                                 break;
                             
                             case 'delete_blog':
@@ -317,11 +196,11 @@ try
                                     break;
                                 }
 
-                                $adminController->deleteBlogPost($_SESSION, $_POST, $_GET['id']);
+                                $adminController->deleteBlogPost($_GET['id']);
                                 break;
 
                                 case 'comments_list':
-                                    $adminController->showCommentsList($_SESSION);
+                                    $adminController->showCommentsList();
                                     break;
 
                                 case 'edit_comment_form':
@@ -337,7 +216,7 @@ try
                                         break;
                                     }
 
-                                    $adminController->showEditCommentForm($_SESSION, $_GET['id']);
+                                    $adminController->showEditCommentForm($_GET['id']);
                                     break;
 
                                 case 'edit_comment_send':
@@ -353,7 +232,7 @@ try
                                         break;
                                     }
     
-                                    $adminController->editComment($_SESSION, $_POST, $_GET['id']);
+                                    $adminController->editComment($_GET['id']);
                                     break;
 
                             default:

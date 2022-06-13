@@ -9,6 +9,7 @@ require_once 'model/BlogCommentManager.php';
 use \AF\OCP5\Service\ServiceHelper;
 use \AF\OCP5\Model\BlogManager;
 use \AF\OCP5\Model\BlogCommentManager;
+use AF\OCP5\Service\SessionService;
 
 class ShowPostService extends ServiceHelper
 {
@@ -17,9 +18,9 @@ class ShowPostService extends ServiceHelper
     private $blogManager;
     private $commentManager;
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
         
         $this->blogManager = new BlogManager();
         $this->commentManager = new BlogCommentManager();

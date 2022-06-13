@@ -4,11 +4,13 @@ namespace AF\OCP5\Service\Admin;
 
 require_once 'service/admin/AdminHelper.php';
 require_once 'traits/BlogPostTrait.php';
+require_once 'service/SessionService.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
 use AF\OCP5\Entity\User;
 use AF\OCP5\Entity\BlogComment;
 use AF\OCP5\Model\BlogCommentManager;
+use AF\OCP5\Service\SessionService;
 use AF\OCP5\Error\Http403Exception;
 use AF\OCP5\Error\Http405Exception;
 use AF\OCP5\Error\Http500Exception;
@@ -27,9 +29,9 @@ class EditCommentService extends AdminHelper
     private $commentManager;
 
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
 
         $this->commentManager = new BlogCommentManager();
     }
@@ -37,14 +39,14 @@ class EditCommentService extends AdminHelper
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function editComment(array $sessionInfos, array $formInfos, int $commentId)
+    public function editComment(int $commentId)
     {
-        if (false === $this->checkToken($sessionInfos, $formInfos)) {
+        if (false === $this->checkToken()) {
             session_destroy();
             throw new Http405Exception($this->errMessages);
         }
 
-        if (false === $this->checkCommentId($sessionInfos, $commentId)) {
+        if (false === $this->checkCommentId($commentId)) {
             return $this;
         }
 
@@ -52,12 +54,12 @@ class EditCommentService extends AdminHelper
             return $this;
         }
 
-        if (false === $this->checkUser($sessionInfos)) {
+        if (false === $this->checkUser()) {
             throw new Http403Exception($this->errMessages);
             return $this;
         }
 
-        if (false === $this->checkParameters($formInfos)) {
+        if (false === $this->checkParameters()) {
             return $this;
         }
 
@@ -97,15 +99,15 @@ class EditCommentService extends AdminHelper
     // ******************************************************************
     // * CHECK PARAMETERS
     // ******************************************************************
-    private function checkCommentId(array $sessionInfos, int $commentId)
+    private function checkCommentId(int $commentId)
     {
         // the token has already been verified, just look for the ID (session and GET are sufficient)
-        if (false === $pos = strrpos($sessionInfos['token'], "_")) {
+        if (false === $pos = strrpos($this->session->getSession('token'), "_")) {
             array_push($this->errMessages, self::ERR_COMMENT_ID_DO_NOT_MATCH);
             return false;
         }
 
-        if (0 !== strcmp(substr($sessionInfos['token'], $pos + 1), $commentId)) {
+        if (0 !== strcmp(substr($this->session->getSession('token'), $pos + 1), $commentId)) {
             array_push($this->errMessages, self::ERR_COMMENT_ID_DO_NOT_MATCH);
             return false;
         }
@@ -130,22 +132,23 @@ class EditCommentService extends AdminHelper
         return true;
     }
 
-    private function checkParameters(array $formInfos)
+    private function checkParameters()
     {
         // checks whether the data has been completed (only the content of the comment is mandatory)
-        if (!isset($formInfos['comment']) || empty(trim($formInfos['comment']))) {
+        if (null === $this->request->getPost('comment') || empty(trim($this->request->getPost('comment')))) {
             array_push($this->errMessages, self::ERR_EMPTY_DATA);
             return false;
         }
-        $this->funArgs['comment'] = trim($formInfos['comment']);
+        $this->funArgs['comment'] = trim($this->request->getPost('comment'));
 
-        if (!isset($formInfos['comment_status']) || empty($formInfos['comment_status'])) {
+        if (null === $this->request->getPost('comment_status') || empty($this->request->getPost('comment_status'))) {
             array_push($this->errMessages, self::ERR_EMPTY_DATA);
             return false;
         }
-        $this->funArgs['comment_status'] = $formInfos['comment_status'];
+        $this->funArgs['comment_status'] = $this->request->getPost('comment_status');
 
-        $this->funArgs['admin_message'] = trim($formInfos['admin_message']);
+        // this field is not mandatory
+        $this->funArgs['admin_message'] = trim($this->request->getPost('admin_message'));
 
         // checks whether the data are compliant
         if (5 > strlen($this->funArgs['comment'])) {

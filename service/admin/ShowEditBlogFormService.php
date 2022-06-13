@@ -4,11 +4,13 @@ namespace AF\OCP5\Service\Admin;
 
 require_once 'service/admin/AdminHelper.php';
 require_once 'traits/BlogPostTrait.php';
+require_once 'service/SessionService.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
 use AF\OCP5\Entity\Blog;
 use AF\OCP5\Model\BlogManager;
 use AF\OCP5\Traits\BlogPostTrait;
+use AF\OCP5\Service\SessionService;
 use AF\OCP5\Error\Http403Exception;
 use AF\OCP5\Error\Http405Exception;
 use AF\OCP5\Error\Http500Exception;
@@ -25,9 +27,9 @@ class ShowEditBlogFormService extends AdminHelper
     // dependencies
     private $blogManager;
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
 
         $this->blogManager = new BlogManager();
     }
@@ -35,9 +37,9 @@ class ShowEditBlogFormService extends AdminHelper
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function showEditForm(array $sessionInfos, int $blogId)
+    public function showEditForm(int $blogId)
     {
-        if (false === $this->checkUser($sessionInfos)) {
+        if (false === $this->checkUser()) {
             throw new Http403Exception($this->errMessages);
             return $this;
         }
