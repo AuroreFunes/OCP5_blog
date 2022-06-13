@@ -4,12 +4,14 @@ namespace AF\OCP5\Service\Admin;
 
 require_once 'service/admin/AdminHelper.php';
 require_once 'traits/BlogPostTrait.php';
+require_once 'service/SessionService.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
 use AF\OCP5\Entity\Blog;
 use AF\OCP5\Entity\User;
 use AF\OCP5\Model\BlogManager;
 use AF\OCP5\Traits\BlogPostTrait;
+use AF\OCP5\Service\SessionService;
 use AF\OCP5\Error\Http403Exception;
 use AF\OCP5\Error\Http405Exception;
 use AF\OCP5\Error\Http500Exception;
@@ -23,9 +25,9 @@ class DeleteBlogService extends AdminHelper
     private $blogManager;
 
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
 
         $this->blogManager = new BlogManager();
     }
@@ -33,14 +35,14 @@ class DeleteBlogService extends AdminHelper
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function deleteBlogPost(array $sessionInfos, array $formInfos, int $blogId)
+    public function deleteBlogPost(int $blogId)
     {
-        if (false === $this->checkToken($sessionInfos, $formInfos)) {
+        if (false === $this->checkToken()) {
             session_destroy();
             throw new Http405Exception($this->errMessages);
         }
 
-        if (false === $this->checkBlogId($sessionInfos, $blogId)) {
+        if (false === $this->checkBlogId($blogId)) {
             return $this;
         }
 
@@ -48,7 +50,7 @@ class DeleteBlogService extends AdminHelper
             return $this;
         }
 
-        if (false === $this->checkUser($sessionInfos)) {
+        if (false === $this->checkUser()) {
             throw new Http403Exception($this->errMessages);
             return $this;
         }
@@ -80,15 +82,15 @@ class DeleteBlogService extends AdminHelper
     // ******************************************************************
     // * CHECK PARAMETERS
     // ******************************************************************
-    private function checkBlogId(array $sessionInfos, int $blogId)
+    private function checkBlogId(int $blogId)
     {
         // the token has already been verified, just look for the ID (session and GET are sufficient)
-        if (false === $pos = strrpos($sessionInfos['token'], "_")) {
+        if (false === $pos = strrpos($this->session->getSession('token'), "_")) {
             array_push($this->errMessages, self::ERR_BLOG_ID_DO_NOT_MATCH);
             return false;
         }
 
-        if (0 !== strcmp(substr($sessionInfos['token'], $pos + 1), $blogId)) {
+        if (0 !== strcmp(substr($this->session->getSession('token'), $pos + 1), $blogId)) {
             array_push($this->errMessages, self::ERR_BLOG_ID_DO_NOT_MATCH);
             return false;
         }

@@ -9,6 +9,7 @@ require_once 'error/Http500Exception.php';
 use AF\OCP5\Service\ServiceHelper;
 use AF\OCP5\Traits\UserTrait;
 use AF\OCP5\Error\Http500Exception;
+use AF\OCP5\Service\SessionService;
 
 class ChangePasswordService extends ServiceHelper
 {
@@ -21,21 +22,21 @@ class ChangePasswordService extends ServiceHelper
     const ERR_WRONG_PASSWORD    = "Les informations n'ont pas pu être vérifiées ou sont incorrectes.";
 
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
     }
 
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function changeUserPassword(array $userInfos, array $formInfos)
+    public function changeUserPassword()
     {
-        if (false === $this->checkUser($userInfos)) {
+        if (false === $this->checkUser()) {
             return $this;
         }
 
-        if (false === $this->checkParameters($formInfos)) {
+        if (false === $this->checkParameters()) {
             return $this;
         }
 
@@ -67,35 +68,35 @@ class ChangePasswordService extends ServiceHelper
     // ******************************************************************
     // * CHECK PARAMETERS
     // ******************************************************************
-    private function checkParameters(array $formInfos)
+    private function checkParameters()
     {
-        if (!isset($formInfos['old_pwd']) || empty($formInfos['old_pwd'])) {
+        if (null === $this->request->getPost('old_pwd') || empty($this->request->getPost('old_pwd'))) {
             array_push($this->errMessages, self::ERR_OLD_PWD_REQUIRED);
             return false;
         }
 
         // the given password and the user's password do not match
-        if (false === UserTrait::verifHashedPwd($formInfos['old_pwd'], $this->funResult['user']->getPwd())) {
+        if (false === UserTrait::verifHashedPwd($this->request->getPost('old_pwd'), $this->funResult['user']->getPwd())) {
             array_push($this->errMessages, self::ERR_WRONG_PASSWORD);
             return false;
         }
 
-        if (!isset($formInfos['new_pwd']) || empty($formInfos['new_pwd'])) {
+        if (null === $this->request->getPost('new_pwd') || empty($this->request->getPost('new_pwd'))) {
             array_push($this->errMessages, self::ERR_NEW_PWD_REQUIRED);
             return false;
         }
 
-        if (false === UserTrait::checkPassword($formInfos['new_pwd'])) {
+        if (false === UserTrait::checkPassword($this->request->getPost('new_pwd'))) {
             array_push($this->errMessages, self::ERR_BAD_NEW_PWD);
             return false;
         }
 
-        if (0 !== strcmp($formInfos['new_pwd'], $formInfos['pwd_confirm'])) {
+        if (0 !== strcmp($this->request->getPost('new_pwd'), $this->request->getPost('pwd_confirm'))) {
             array_push($this->errMessages, self::ERR_PWD_NOT_IDENTICAL);
             return false;
         }
 
-        $this->funArgs['newPwd'] = UserTrait::hashPassword($formInfos['new_pwd']);
+        $this->funArgs['newPwd'] = UserTrait::hashPassword($this->request->getPost('new_pwd'));
 
         return true;
     }

@@ -36,11 +36,11 @@ class AdminController extends DefaultController
         parent::__construct();
     }
 
-    public function showAdminIndex(array $sessionInfos)
+    public function showAdminIndex()
     {
         // check access level
-        $service = new CheckAdminAccessService();
-        if (false === $service->checkAccess($sessionInfos)) {
+        $service = new CheckAdminAccessService($this->session);
+        if (false === $service->checkAccess()) {
             throw new Http403Exception($service->getErrorsMessages());
             return false;
         }
@@ -49,47 +49,47 @@ class AdminController extends DefaultController
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Accéder à la gestion du site',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get()
                                 ]);
         return true;
     }
 
-    public function showBlogForm(array $sessionInfos)
+    public function showBlogForm()
     {
         // check access level
-        $service = new CheckAdminAccessService();
+        $service = new CheckAdminAccessService($this->session);
 
-        if (false === $service->checkAccess($sessionInfos)) {
+        if (false === $service->checkAccess()) {
             throw new Http403Exception($service->getErrorsMessages());
             return false;
         }
 
         // new CSRF token
         $token = UserTrait::generateSessionToken();
-        $_SESSION['token'] = $token;
+        $this->session->setSession('token', $token);
 
         $template = $this->twig->load('pages/admin/blogPostForm.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Créer un nouveau billet de blog',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'token'         => $token
                                 ]);
         return true;
     }
 
-    public function createNewBlogPost(array $sessionInfos, array $formInfos)
+    public function createNewBlogPost()
     {
-        $createService = new CreateBlogPostService();
-        $createService->createNewBlogPost($sessionInfos, $formInfos);
+        $createService = new CreateBlogPostService($this->session);
+        $createService->createNewBlogPost();
 
         if (false === $createService->getStatus()) {
             $template = $this->twig->load('pages/admin/blogPostForm.html.twig');
             echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                     'pageTitle'     => 'Administration',
                                     'pageSubTitle'  => 'Créer un nouveau billet de blog',
-                                    'session'       => $sessionInfos,
-                                    'token'         => $sessionInfos['token'],
+                                    'session'       => $this->session->get(),
+                                    'token'         => $this->session->getSession('token'),
                                     'messages'      => $createService->getErrorsMessages()
                                     ]);
             return false;
@@ -99,24 +99,24 @@ class AdminController extends DefaultController
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Billet de blog créé',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'messages'      => ['Le billet a été ajouté avec succès.'],
                                 'back'          => 'index.php?action=admin&req=index'
                                 ]);
         return true;
     }
 
-    public function showBlogList(array $sessionInfos)
+    public function showBlogList()
     {
-        $showListService = new ShowBlogListService();
-        $showListService->showBlogList($sessionInfos);
+        $showListService = new ShowBlogListService($this->session);
+        $showListService->showBlogList();
 
         if (false === $showListService->getStatus()) {
             $template = $this->twig->load('errors/genericMessagePage.html.twig');
             echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                     'pageTitle'     => 'Administration',
                                     'pageSubTitle'  => 'Information',
-                                    'session'       => $sessionInfos,
+                                    'session'       => $this->session->get(),
                                     'messages'      => $showListService->getErrorsMessages(),
                                     'back'          => 'index.php?action=admin&req=index'
                                     ]);
@@ -127,24 +127,24 @@ class AdminController extends DefaultController
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Liste des billets de blog',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'blogPosts'     => $showListService->getResult()['blogList']
                                 ]);
 
         return true;
     }
     
-    public function showEditBlogForm(array $sessionInfos, int $postId)
+    public function showEditBlogForm(int $postId)
     {
-        $showEditFormService = new ShowEditBlogFormService();
-        $showEditFormService->showEditForm($sessionInfos, $postId);
+        $showEditFormService = new ShowEditBlogFormService($this->session);
+        $showEditFormService->showEditForm($postId);
 
         if (false === $showEditFormService->getStatus()) {
             $template = $this->twig->load('errors/genericMessagePage.html.twig');
             echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                     'pageTitle'     => 'Administration',
                                     'pageSubTitle'  => 'Information',
-                                    'session'       => $sessionInfos,
+                                    'session'       => $this->session->get(),
                                     'messages'      => $showEditFormService->getErrorsMessages(),
                                     'back'          => 'index.php?action=admin&req=blog_list'
                                     ]);
@@ -153,13 +153,13 @@ class AdminController extends DefaultController
 
         // CSRF token : we add blog ID to check in the next step
         $token = UserTrait::generateSessionToken() . "_" . $postId;
-        $_SESSION['token'] = $token;
+        $this->session->setSession('token', $token);
 
         $template = $this->twig->load('pages/admin/editBlogPostForm.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Liste des billets de blog',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'blog'          => $showEditFormService->getResult()['blogPost'],
                                 'adminList'     => $showEditFormService->getResult()['adminList'],
                                 'token'         => $token
@@ -167,16 +167,16 @@ class AdminController extends DefaultController
         return true;
     }
 
-    public function editBlogPost(array $sessionInfos, array $formInfos, int $blogId)
+    public function editBlogPost(int $blogId)
     {
-        $editBlogService = new EditBlogService();
-        $editBlogService->editBlogPost($sessionInfos, $formInfos, $blogId);
+        $editBlogService = new EditBlogService($this->session);
+        $editBlogService->editBlogPost($blogId);
 
         $template = $this->twig->load('errors/genericMessagePage.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Information',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'messages'      => ($editBlogService->getStatus()) ? 
                                                     ["La modification a bien été enregistrée."]  :
                                                     $editBlogService->getErrorsMessages(),
@@ -186,28 +186,29 @@ class AdminController extends DefaultController
         return $editBlogService->getStatus();
     }
 
-    public function deleteBlogPost(array $sessionInfos, array $formInfos, int $blogId)
+    public function deleteBlogPost(int $blogId)
     {
-        $deleteBLogService = new DeleteBlogService();
-        $deleteBLogService->deleteBlogPost($sessionInfos, $formInfos, $blogId);
+        $deleteBLogService = new DeleteBlogService($this->session);
+        $deleteBLogService->deleteBlogPost($blogId);
 
         $template = $this->twig->load('errors/genericMessagePage.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Information',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'messages'      => ($deleteBLogService->getStatus()) ? 
                                                     ["La suppression a bien été effectuée."]  :
                                                     $deleteBLogService->getErrorsMessages(),
                                 'back'          => 'index.php?action=admin&req=blog_list'
                                 ]);
 
+        return $deleteBLogService->getStatus();
     }
 
-    public function showCommentsList(array $sessionInfos)
+    public function showCommentsList()
     {
-        $commentsListService = new ShowCommentsListService();
-        $commentsListService->showCommentsList($sessionInfos);
+        $commentsListService = new ShowCommentsListService($this->session);
+        $commentsListService->showCommentsList();
 
         if (false === $commentsListService->getStatus()) {
             $template = $this->twig->load('errors/genericMessagePage.html.twig');
@@ -215,7 +216,7 @@ class AdminController extends DefaultController
                 'headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                 'pageTitle'     => 'Administration',
                 'pageSubTitle'  => 'Information',
-                'session'       => $sessionInfos,
+                'session'       => $this->session->get(),
                 'messages'      => $commentsListService->getErrorsMessages(),
                 'back'          => 'index.php?action=admin&req=blog_list'
                 ]);
@@ -228,24 +229,24 @@ class AdminController extends DefaultController
             'headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
             'pageTitle'     => 'Administration',
             'pageSubTitle'  => 'Liste des commentaires en attente',
-            'session'       => $sessionInfos,
+            'session'       => $this->session->get(),
             'comments'      => $commentsListService->getResult()['commentsList'],
             ]);
 
         return true;
     }
 
-    public function showEditCommentForm(array $sessionInfos, int $commentId)
+    public function showEditCommentForm(int $commentId)
     {
-        $showCommentFormService = new ShowEditCommentFormService();
-        $showCommentFormService->showEditForm($sessionInfos, $commentId);
+        $showCommentFormService = new ShowEditCommentFormService($this->session);
+        $showCommentFormService->showEditForm($commentId);
 
         if (false === $showCommentFormService->getStatus()) {
             $template = $this->twig->load('errors/genericMessagePage.html.twig');
             echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                     'pageTitle'     => 'Administration',
                                     'pageSubTitle'  => 'Information',
-                                    'session'       => $sessionInfos,
+                                    'session'       => $this->session->get(),
                                     'messages'      => $showCommentFormService->getErrorsMessages(),
                                     'back'          => 'index.php?action=admin&req=comments_list'
                                     ]);
@@ -260,23 +261,23 @@ class AdminController extends DefaultController
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Liste des billets de blog',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'comment'       => $showCommentFormService->getResult()['comment'],
                                 'token'         => $token
                                 ]);
         return true;
     }
 
-    public function editComment(array $sessionInfos, array $formInfos, int $commentId)
+    public function editComment(int $commentId)
     {
-        $editCommentService = new EditCommentService();
-        $editCommentService->editComment($sessionInfos, $formInfos, $commentId);
+        $editCommentService = new EditCommentService($this->session);
+        $editCommentService->editComment($commentId);
 
         $template = $this->twig->load('errors/genericMessagePage.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',
                                 'pageTitle'     => 'Administration',
                                 'pageSubTitle'  => 'Information',
-                                'session'       => $sessionInfos,
+                                'session'       => $this->session->get(),
                                 'messages'      => ($editCommentService->getStatus()) ? 
                                                     ["Le commentaire a bien été enregistré."]  :
                                                     $editCommentService->getErrorsMessages(),

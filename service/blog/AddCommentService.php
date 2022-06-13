@@ -15,6 +15,7 @@ use AF\OCP5\Model\BlogManager;
 use AF\OCP5\Entity\BlogComment;
 use AF\OCP5\Model\BlogCommentManager;
 use AF\OCP5\Error\Http500Exception;
+use AF\OCP5\Service\SessionService;
 
 class AddCommentService extends ServiceHelper
 {
@@ -29,9 +30,9 @@ class AddCommentService extends ServiceHelper
     private $blogCommentManager;
 
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
 
         $this->blogManager = new BlogManager();
         $this->blogCommentManager = new BlogCommentManager();
@@ -41,15 +42,15 @@ class AddCommentService extends ServiceHelper
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function addComment(int $postId, array $comment, array $userInfos)
+    public function addComment(int $postId)
     {
         $this->funArgs['postId'] = $postId;
 
-        if (false === $this->checkUser($userInfos)) {
+        if (false === $this->checkUser()) {
             return $this;
         }
 
-        if (false === $this->checkParameters($comment)) {
+        if (false === $this->checkParameters()) {
             return $this;
         }
 
@@ -89,13 +90,13 @@ class AddCommentService extends ServiceHelper
     // ******************************************************************
     // * CHECK PARAMETERS
     // ******************************************************************
-    private function checkParameters(array $commentInfos)
+    private function checkParameters()
     {
-        if (!isset($commentInfos['comment']) || empty(trim($commentInfos['comment']))) {
+        if (null === $this->request->getPost('comment') || empty(trim($this->request->getPost('comment')))) {
             array_push($this->errMessages, self::ERR_COMMENT_EMPTY);
             return false;
         }
-        $this->funArgs['commentText'] = trim($commentInfos['comment']);
+        $this->funArgs['commentText'] = trim($this->request->getPost('comment'));
 
         return true;
     }

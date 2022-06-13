@@ -68,6 +68,7 @@ class BlogManager extends Manager {
                 b.caption AS caption,
                 DATE_FORMAT(b.created_on, \'%d/%m/%Y à %Hh%imin\') AS created_on,
                 DATE_FORMAT(b.modified_on, \'%d/%m/%Y à %Hh%imin\') AS modified_on,
+                b.content,
                 u.username AS author
             FROM blog_post AS b
             INNER JOIN user AS u ON b.author_id = u.id

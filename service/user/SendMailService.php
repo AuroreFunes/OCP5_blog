@@ -15,6 +15,7 @@ use AF\OCP5\Entity\User;
 use AF\OCP5\Entity\UserSession;
 use AF\OCP5\Traits\UserTrait;
 use AF\OCP5\Error\Http500Exception;
+use AF\OCP5\Service\SessionService;
 
 class SendMailService extends ServiceHelper
 {
@@ -32,9 +33,9 @@ class SendMailService extends ServiceHelper
     // private use
     private $mail;
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
 
         $this->mail = new PHPMailer();
     }
@@ -42,21 +43,22 @@ class SendMailService extends ServiceHelper
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function sendMail(array $sessionInfos, array $formInfos)
+    public function sendMail()
     {
-        if (false === $this->checkToken($sessionInfos, $formInfos)) {
+        
+        if (false === $this->checkToken()) {
             return $this;
         }
-
-        if (false === $this->checkParameters($formInfos)) {
+        
+        if (false === $this->checkParameters()) {
             return $this;
         }
-
+        
         if (false === $this->sendMailPhpMailer()) {
             array_push($this->errMessages, self::ERR_MAIL_NOT_SEND);
             return $this;
         }
-
+        
         array_push($this->errMessages, self::MAIL_SEND_OK);
         // status ok
         $this->status = true;
@@ -105,22 +107,22 @@ class SendMailService extends ServiceHelper
     // ******************************************************************
     // * CHECK PARAMETERS
     // ******************************************************************
-    private function checkParameters(array $formInfos)
+    private function checkParameters()
     {
-        if (   !isset($formInfos['name'])       || empty($formInfos['name'])
-            || !isset($formInfos['firstname'])  || empty($formInfos['firstname'])
-            || !isset($formInfos['mail'])       || empty($formInfos['mail'])
-            || !isset($formInfos['message'])    || empty($formInfos['message'])
+        if (   null === $this->request->getPost('name')       || empty($this->request->getPost('name'))
+            || null === $this->request->getPost('firstname')  || empty($this->request->getPost('firstname'))
+            || null === $this->request->getPost('mail')       || empty($this->request->getPost('mail'))
+            || null === $this->request->getPost('message')    || empty($this->request->getPost('message'))
         ) {
             array_push($this->errMessages, self::FORM_EMPTY);
             return false;
         }
 
         // save parameters
-        $this->funArgs['name']      = trim($formInfos['name']);
-        $this->funArgs['firstname'] = trim($formInfos['firstname']);
-        $this->funArgs['mail']      = trim($formInfos['mail']);
-        $this->funArgs['message']   = trim($formInfos['message']);
+        $this->funArgs['name']      = trim($this->request->getPost('name'));
+        $this->funArgs['firstname'] = trim($this->request->getPost('firstname'));
+        $this->funArgs['mail']      = trim($this->request->getPost('mail'));
+        $this->funArgs['message']   = trim($this->request->getPost('message'));
 
         $isFormOk = true;
 

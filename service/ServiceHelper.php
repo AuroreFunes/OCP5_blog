@@ -2,12 +2,18 @@
 
 namespace AF\OCP5\Service;
 
+require_once 'service/SessionService.php';
+require_once 'service/RequestService.php';
+
 require_once 'entity/User.php';
 require_once 'traits/UserTrait.php';
 require_once 'model/UserManager.php';
 
 require_once 'entity/UserSession.php';
 require_once 'model/UserSessionManager.php';
+
+use AF\OCP5\Service\SessionService;
+use AF\OCP5\Service\RequestService;
 
 use AF\OCP5\Entity\User;
 use AF\OCP5\Traits\UserTrait;
@@ -24,6 +30,10 @@ abstract class ServiceHelper {
     const ERR_SESSION_DONT_MATCH    = "Erreur lors de la vérification des informations de connexion.";
     const ERR_TOKEN_DONT_MATCH      = "Erreur lors de la vérification de la source d'envoi des données.";
 
+    // superglobals
+    protected $session;
+    protected $request;
+
     // dependencies
     protected $userManager;
     protected $sessionManager;
@@ -34,11 +44,14 @@ abstract class ServiceHelper {
     protected $funResult;
     protected $errMessages;
 
-    public function __construct() {
+    public function __construct(SessionService &$session) {
         $this->status = false;
         $this->funArgs = [];
         $this->funResult = [];
         $this->errMessages = [];
+
+        $this->session = $session;
+        $this->request = new RequestService();
 
         $this->userManager = new UserManager();
         $this->sessionManager = new UserSessionManager();
@@ -64,28 +77,32 @@ abstract class ServiceHelper {
         return $this->errMessages;
     }
 
+    public function getPostInfos() {
+        return $this->request->getPostFull();
+    }
+
     // checks whether the session contains all the user's settings 
     // and returns the information of the logged-in user and the session used
-    protected function checkUser(array $sessionInfos)
+    protected function checkUser()
     {
         // check server session
-        if (!isset($sessionInfos['user_id']) || empty($sessionInfos['user_id'])) {
+        if (null === $this->session->getSession('user_id')) {
             array_push($this->errMessages, self::ERR_INVALID_SESSION);
             return false;
         }
-        $this->funArgs['userId'] = $sessionInfos['user_id'];
+        $this->funArgs['userId'] = $this->session->getSession('user_id');
 
-        if (!isset($sessionInfos['username']) || empty($sessionInfos['username'])) {
+        if (null === $this->session->getSession('username')) {
             array_push($this->errMessages, self::ERR_INVALID_SESSION);
             return false;
         }
-        $this->funArgs['username'] = $sessionInfos['username'];
+        $this->funArgs['username'] = $this->session->getSession('username');
 
-        if (!isset($sessionInfos['session_token']) || empty($sessionInfos['session_token'])) {
+        if (null === $this->session->getSession('session_token')) {
             array_push($this->errMessages, self::ERR_INVALID_SESSION);
             return false;
         }
-        $this->funArgs['sessionToken'] = $sessionInfos['session_token'];
+        $this->funArgs['sessionToken'] = $this->session->getSession('session_token');
 
         // find user
         $userDatas = $this->userManager->findLoggedInUser($this->funArgs['userId'],
@@ -100,46 +117,46 @@ abstract class ServiceHelper {
         $this->funResult['user']->hydrate($userDatas);
 
         // check database session
-        $session = new UserSession();
-        $session->setUserId($this->funResult['user']->getId());
-        $session->setIpAddress(UserTrait::getUserIp());
+        $dbSession = new UserSession();
+        $dbSession->setUserId($this->funResult['user']->getId());
+        $dbSession->setIpAddress(UserTrait::getUserIp());
 
-        $sessionDatas = $this->sessionManager->find($session);
+        $dbSessionDatas = $this->sessionManager->find($dbSession);
         
-        if (false === $sessionDatas) {
+        if (false === $dbSessionDatas) {
             // no session matches in the database
             array_push($this->errMessages, self::ERR_SESSION_NOT_FOUND);
             return false;
         }
 
-        if (0 !== strcmp($this->funArgs['sessionToken'], $sessionDatas['session_token'])) {
+        if (0 !== strcmp($this->funArgs['sessionToken'], $dbSessionDatas['session_token'])) {
             // the user's session does not match the one in the database
             array_push($this->errMessages, self::ERR_SESSION_DONT_MATCH);
             return false;
         }
 
-        $session->setSessionToken($sessionDatas['session_token']);
+        $dbSession->setSessionToken($dbSessionDatas['session_token']);
 
-        $this->funResult['session'] = $session;
+        $this->funResult['session'] = $dbSession;
 
         return true;
     }
 
     // to use when a form is sent
     // check if token from the session and the form match
-    protected function checkToken(array $sessionInfos, array $formInfos)
+    protected function checkToken()
     {
-        if (!isset($sessionInfos['token']) || !isset($formInfos['token'])) {
+        if (null === $this->session->getSession('token')) {
             array_push($this->errMessages, self::ERR_TOKEN_DONT_MATCH);
             return false;
         }
-
-        if (empty($sessionInfos['token']) || empty($formInfos['token'])) {
+       
+        if (null === $this->request->getPost('token')) {
             array_push($this->errMessages, self::ERR_TOKEN_DONT_MATCH);
             return false;
         }
-
-        if (0 !== strcmp($sessionInfos['token'], $formInfos['token'])) {
+        
+        if (0 !== strcmp($this->session->getSession('token'), $this->request->getPost('token'))) {
             array_push($this->errMessages, self::ERR_TOKEN_DONT_MATCH);
             return false;
         }

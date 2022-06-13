@@ -13,6 +13,7 @@ use AF\OCP5\Entity\User;
 use AF\OCP5\Traits\UserTrait;
 use AF\OCP5\Model\UserManager;
 use AF\OCP5\Error\Http500Exception;
+use AF\OCP5\Service\SessionService;
 
 class RegistrationService extends ServiceHelper
 {
@@ -27,9 +28,9 @@ class RegistrationService extends ServiceHelper
     const ERR_ALREADY_EXISTS_MAIL       = "Cette adresse e-mail ne peut pas être utilisée.";
 
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
 
         $this->userManager = new UserManager();
     }
@@ -38,13 +39,13 @@ class RegistrationService extends ServiceHelper
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function registersUser(array $datas)
+    public function registersUser()
     {
         // save parameters
-        $this->funArgs['username']  = $datas['username'];
-        $this->funArgs['mail']      = $datas['mail'];
-        $this->funArgs['pwd']       = $datas['pwd'];
-        $this->funArgs['pwd_conf']  = $datas['pwd_confirm'];
+        $this->funArgs['username']  = $this->request->getPost('username');
+        $this->funArgs['mail']      = $this->request->getPost('mail');
+        $this->funArgs['pwd']       = $this->request->getPost('pwd');
+        $this->funArgs['pwd_conf']  = $this->request->getPost('pwd_confirm');
 
         if (false === $this->checkParameters()) {
             return $this;

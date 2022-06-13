@@ -4,11 +4,13 @@ namespace AF\OCP5\Service\Admin;
 
 require_once 'service/admin/AdminHelper.php';
 require_once 'traits/BlogPostTrait.php';
+require_once 'service/SessionService.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
 use AF\OCP5\Entity\Blog;
 use AF\OCP5\Model\BlogManager;
 use AF\OCP5\Traits\BlogPostTrait;
+use AF\OCP5\Service\SessionService;
 use AF\OCP5\Error\Http403Exception;
 use AF\OCP5\Error\Http405Exception;
 use AF\OCP5\Error\Http500Exception;
@@ -26,9 +28,9 @@ class CreateBlogPostService extends AdminHelper
     private $blogManager;
 
 
-    public function __construct()
+    public function __construct(SessionService &$session)
     {
-        parent::__construct();
+        parent::__construct($session);
 
         $this->blogManager = new BlogManager();
     }
@@ -36,19 +38,19 @@ class CreateBlogPostService extends AdminHelper
     // ******************************************************************
     // * ENTRYPOINT
     // ******************************************************************
-    public function createNewBlogPost(array $sessionInfos, array $formInfos)
+    public function createNewBlogPost()
     {
-        if (false === $this->checkToken($sessionInfos, $formInfos)) {
+        if (false === $this->checkToken()) {
             session_destroy();
             throw new Http405Exception($this->errMessages);
         }
 
-        if (false === $this->checkUser($sessionInfos)) {
+        if (false === $this->checkUser()) {
             throw new Http403Exception($this->errMessages);
             return $this;
         }
 
-        if (false === $this->checkParameters($formInfos)) {
+        if (false === $this->checkParameters()) {
             return $this;
         }
 
@@ -85,26 +87,26 @@ class CreateBlogPostService extends AdminHelper
     // ******************************************************************
     // * CHECK PARAMETERS
     // ******************************************************************
-    private function checkParameters(array $formInfos)
+    private function checkParameters()
     {
         // checks whether the data has been completed
-        if (!isset($formInfos['title']) || empty(trim($formInfos['title']))) {
+        if (null === $this->request->getPost('title') || empty(trim($this->request->getPost('title')))) {
             array_push($this->errMessages, self::ERR_EMPTY_DATA);
             return false;
         }
-        $this->funArgs['title'] = trim($formInfos['title']);
+        $this->funArgs['title'] = trim($this->request->getPost('title'));
 
-        if (!isset($formInfos['caption']) || empty(trim($formInfos['caption']))) {
+        if (null === $this->request->getPost('caption') || empty(trim($this->request->getPost('caption')))) {
             array_push($this->errMessages, self::ERR_EMPTY_DATA);
             return false;
         }
-        $this->funArgs['caption'] = trim($formInfos['caption']);
+        $this->funArgs['caption'] = trim($this->request->getPost('caption'));
 
-        if (!isset($formInfos['content']) || empty(trim($formInfos['content']))) {
+        if (null === $this->request->getPost('content') || empty(trim($this->request->getPost('content')))) {
             array_push($this->errMessages, self::ERR_EMPTY_DATA);
             return false;
         }
-        $this->funArgs['content'] = trim($formInfos['content']);
+        $this->funArgs['content'] = trim($this->request->getPost('content'));
 
         // checks whether the data are compliant
         $isDatasOk = true;
