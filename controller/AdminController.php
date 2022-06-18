@@ -65,7 +65,7 @@ class AdminController extends DefaultController
         }
 
         // new CSRF token
-        $token = UserTrait::generateSessionToken();
+        $token = UserTrait::generateToken();
         $this->session->setSession('token', $token);
 
         $template = $this->twig->load('pages/admin/blogPostForm.html.twig');
@@ -152,7 +152,7 @@ class AdminController extends DefaultController
         }
 
         // CSRF token : we add blog ID to check in the next step
-        $token = UserTrait::generateSessionToken() . "_" . $postId;
+        $token = UserTrait::generateToken() . "_" . $postId;
         $this->session->setSession('token', $token);
 
         $template = $this->twig->load('pages/admin/editBlogPostForm.html.twig');
@@ -254,8 +254,8 @@ class AdminController extends DefaultController
         }
 
         // CSRF token : we add comment ID to check in the next step
-        $token = UserTrait::generateSessionToken() . "_" . $commentId;
-        $_SESSION['token'] = $token;
+        $token = UserTrait::generateToken() . "_" . $commentId;
+        $this->session->setSession('token', $token);
 
         $template = $this->twig->load('pages/admin/editCommentForm.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/gearing-bg.jpg\');',

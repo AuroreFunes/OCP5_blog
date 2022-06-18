@@ -3,18 +3,13 @@
 namespace AF\OCP5\Service\User;
 
 require_once 'service/ServiceHelper.php';
-require_once 'entity/User.php';
 require_once 'traits/UserTrait.php';
 require_once 'model/UserSessionManager.php';
-require_once 'error/Http500Exception.php';
+require_once 'service/SessionService.php';
 
 use AF\OCP5\Service\ServiceHelper;
 use PHPMailer\PHPMailer\PHPMailer;
-
-use AF\OCP5\Entity\User;
-use AF\OCP5\Entity\UserSession;
 use AF\OCP5\Traits\UserTrait;
-use AF\OCP5\Error\Http500Exception;
 use AF\OCP5\Service\SessionService;
 
 class SendMailService extends ServiceHelper

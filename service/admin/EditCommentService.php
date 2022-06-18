@@ -7,7 +7,6 @@ require_once 'traits/BlogPostTrait.php';
 require_once 'service/SessionService.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
-use AF\OCP5\Entity\User;
 use AF\OCP5\Entity\BlogComment;
 use AF\OCP5\Model\BlogCommentManager;
 use AF\OCP5\Service\SessionService;
