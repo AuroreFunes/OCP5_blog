@@ -76,7 +76,7 @@ class ConnectionService extends ServiceHelper
         $userSession = new UserSession();
         $userSession->setUserId($this->funResult['user']->getId());
         $userSession->setIpAddress(UserTrait::getUserIp());
-        $userSession->setSessionToken(UserTrait::generateSessionToken());
+        $userSession->setSessionToken(UserTrait::generateToken());
 
         // check if an other session exists for this user
         $sessionDatas = $this->sessionManager->find($userSession);
