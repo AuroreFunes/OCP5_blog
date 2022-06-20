@@ -34,12 +34,13 @@ class BlogController extends DefaultController {
                                 'session'       => $this->session->get(),
                                 'blogPosts'     => $blogPosts
                                 ]);
+        return true;
     }
 
     public function showPost(int $postId)
     {
         // CSRF token (to add comment)
-        $this->session->setSession('token', UserTrait::generateSessionToken());
+        $this->session->setSession('token', UserTrait::generateToken());
 
         $service = new ShowPostService($this->session);
         $service->showPost($postId);
@@ -60,6 +61,7 @@ class BlogController extends DefaultController {
                                 'comments'      => $service->getResult()['comments'],
                                 'token'         => $this->session->getSession('token')
                                 ]);
+        return true;
     }
 
     public function addComment(int $postId)
@@ -76,16 +78,18 @@ class BlogController extends DefaultController {
                                     'session'       => $this->session->get(),
                                     'messages'      => $addCommentService->getErrorsMessages()
                                     ]);
-       } else {
-            $template = $this->twig->load('pages/information.html.twig');
-            echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/contact-bg.jpg\');',
-                                    'pageTitle'     => 'Commentaire ajouté !',
-                                    'pageSubTitle'  => 'Votre commentaire a été ajouté',
-                                    'title'         => 'Commentaire ajouté',
-                                    'session'       => $this->session->get(),
-                                    'messages'      => ['Votre commentaire a été publié.',
-                                                        'Il sera visible après validation par un administrateur.']
-                                    ]);
+            return false;
        }
+
+        $template = $this->twig->load('pages/information.html.twig');
+        echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/contact-bg.jpg\');',
+                                'pageTitle'     => 'Commentaire ajouté !',
+                                'pageSubTitle'  => 'Votre commentaire a été ajouté',
+                                'title'         => 'Commentaire ajouté',
+                                'session'       => $this->session->get(),
+                                'messages'      => ['Votre commentaire a été publié.',
+                                                    'Il sera visible après validation par un administrateur.']
+                                ]);
+       return true;
     }
 }

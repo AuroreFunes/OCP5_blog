@@ -8,9 +8,7 @@ require_once 'service/SessionService.php';
 
 use AF\OCP5\Service\Admin\AdminHelper;
 use AF\OCP5\Entity\Blog;
-use AF\OCP5\Entity\User;
 use AF\OCP5\Model\BlogManager;
-use AF\OCP5\Traits\BlogPostTrait;
 use AF\OCP5\Service\SessionService;
 use AF\OCP5\Error\Http403Exception;
 use AF\OCP5\Error\Http405Exception;

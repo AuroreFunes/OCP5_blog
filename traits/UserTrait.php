@@ -67,7 +67,7 @@ trait UserTrait
     }
 
     // returns a single token
-    public static function generateSessionToken()
+    public static function generateToken()
     {
         return md5(uniqid(mt_rand(), true));
     }

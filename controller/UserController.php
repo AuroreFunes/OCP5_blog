@@ -34,7 +34,7 @@ class UserController extends DefaultController {
         }
 
         // create new CSRF token
-        $this->session->setSession('token', UserTrait::generateSessionToken());
+        $this->session->setSession('token', UserTrait::generateToken());
 
         $template = $this->twig->load('pages/connection.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/home-bg.jpg\');',
@@ -55,7 +55,7 @@ class UserController extends DefaultController {
         }
 
         // new CSRF token
-        $this->session->setSession('token', UserTrait::generateSessionToken());
+        $this->session->setSession('token', UserTrait::generateToken());
 
         $template = $this->twig->load('pages/registration.html.twig');
         echo $template->render(['headerStyle'   => 'background-image: url(\'public/assets/img/home-bg.jpg\');',
@@ -152,7 +152,7 @@ class UserController extends DefaultController {
     public function userLogout()
     {
         // user need not already not logged in
-        if(!is_null($this->session->getSession('user_id')) || !is_null($this->session->getSession('username'))) {
+        if(is_null($this->session->getSession('user_id')) || is_null($this->session->getSession('username'))) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
@@ -171,6 +171,7 @@ class UserController extends DefaultController {
                                 'messages'      => ['Au revoir.',
                                                 'Revenez vite !']
                                 ]);
+        return true;
     }
 
     public function showProfileIndex()
@@ -187,6 +188,7 @@ class UserController extends DefaultController {
                                 'pageSubTitle'  => 'Editer votre profil',
                                 'session'       => $this->session->get(),
                                 ]);
+        return true;
     }
 
     public function changePassword()
@@ -202,7 +204,7 @@ class UserController extends DefaultController {
         // the form has not been submitted
         if (empty($this->request->getPostFull())) {
             // new CSRF token
-            $this->session->setSession('token', UserTrait::generateSessionToken());
+            $this->session->setSession('token', UserTrait::generateToken());
         }
         else {
             // check CSRF token

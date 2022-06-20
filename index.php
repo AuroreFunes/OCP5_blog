@@ -30,10 +30,6 @@ use AF\OCP5\Error\Http404Exception;
 use AF\OCP5\Error\Http405Exception;
 use AF\OCP5\Error\Http500Exception;
 
-use AF\OCP5\Service\SessionService;
-use AF\OCP5\Service\RequestService;
-
-use AF\OCP5\Traits\UserTrait;
 use AF\OCP5\Controller\IndexController;
 use AF\OCP5\Controller\BlogController;
 use AF\OCP5\Controller\UserController;

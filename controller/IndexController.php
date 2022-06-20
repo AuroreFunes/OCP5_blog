@@ -20,7 +20,7 @@ class IndexController extends DefaultController {
     function showIndex()
     {
         // CSRF token
-        $token = UserTrait::generateSessionToken();
+        $token = UserTrait::generateToken();
         $this->session->setSession('token', $token);
 
         $template = $this->twig->load('pages/index.html.twig');
@@ -34,10 +34,7 @@ class IndexController extends DefaultController {
 
     public function sendContactMail()
     {
-        // new CSRF token
-        // $token = UserTrait::generateSessionToken();
-        // $this->session->setSession('token', $token);
-        
+       
         $mailService = new SendMailService($this->session);
         $mailService->sendMail();
 
@@ -50,6 +47,7 @@ class IndexController extends DefaultController {
                                  'messages'     => $mailService->getErrorsMessages(),
                                  'messageClass' => $mailService->getStatus() ? 'alert-success' : 'alert-danger'
                                 ]);
+        return $mailService->getStatus();
     }
 
 }

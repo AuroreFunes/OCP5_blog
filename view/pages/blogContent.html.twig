@@ -23,7 +23,7 @@
                     <h2 class="post-title">Commentaires</h2>
 
                     <!-- Add a comment-->
-                    {% if not session %}
+                    {% if not session.username or not session.user_id %}
                         <p class="post-meta">Vous devez être connecté pour ajouter un commentaire.</p>
                     {% else %}
                         <!-- ajouter le formulaire -->
