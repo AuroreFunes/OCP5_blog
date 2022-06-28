@@ -51,7 +51,7 @@ try
     $adminController = new AdminController();
 
     if (!empty($_GET)) {
-
+        
         if (isset($_GET['action'])) {
 
             switch($_GET['action']) {
@@ -253,6 +253,12 @@ try
             throw new Http400Exception(Http400Exception::DEFAULT_MESSAGE);
         }
     } else {
+        // we need an error if a user tries to access index.php/xxx : the other cases are already handled
+        if (false !== stripos($_SERVER ['REQUEST_URI'], "index.php/")) {
+            header('Location: ' . substr($_SERVER ['REQUEST_URI'], 0, stripos($_SERVER ['REQUEST_URI'], "index.php/")) . "index.php");
+            exit();
+        }
+
         $indexController->showIndex();
     }
 
