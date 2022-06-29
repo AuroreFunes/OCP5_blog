@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Entity;
 
-require_once('entity/EntityFeature.php');
+require_once 'entity/EntityFeature.php';
 
 class Blog
 {
@@ -22,11 +22,15 @@ class Blog
         return $this->_id;
     }
 
-    public function getAuthor() {
+    protected function setId($blogId) {
+        $this->_id = $blogId;
+    }
+
+    public function getAuthorId() {
         return $this->_author_id;
     }
 
-    public function setAuthor($authorId) {
+    public function setAuthorId($authorId) {
         $this->_author_id = $authorId;
         return $this;
     }

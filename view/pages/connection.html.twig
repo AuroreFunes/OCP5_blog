@@ -1,26 +1,37 @@
-{% extends 'base.html.twig' %}
+{% extends 'commons/base.html.twig' %}
 {% block title %}DémosAF - Connexion{% endblock %}
 
 {% block content %}
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
+                {% if messages is not empty %}
+                    <div class="col-md-10 col-lg-8 col-xl-7 mb-3 alert alert-danger">
+                        {% for message in messages %}
+                            {{ message }}<br />
+                    {% endfor %}
+                    </div>
+                {% endif %}
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                    <form id="connexion-form" class="form-signin" method="post" action="index.php?action=connection">
+                    <form id="connexion-form" class="form-signin" method="post" action="index.php?action=submit_connection">
                         <div class="mb-3 form-label-group">
                             <label for="pseudo">Votre pseudo :</label>
-                            <input type="text" id="pseudo" class="form-control" placeholder="Pseudonyme" required="" autofocus="">
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Pseudonyme" 
+                                required="" autofocus="" />
                         </div>
 
                         <div class="mb-3 form-label-group">
                             <label for="pwd">Mot de passe :</label>
-                            <input type="password" id="pwd" class="form-control" placeholder="Mot de passe" required="">
+                            <input type="password" name="pwd" id="pwd" class="form-control" placeholder="Mot de passe" 
+                                required="" />
                         </div>
 
-                        <div class="mb-3 checkbox">
+                        {# <div class="mb-3 checkbox">
                             <label>
                                 <input type="checkbox" value="remember-me"> Se souvenir de moi
                             </label>
-                         </div>
+                        </div> #}
+                        
+                        <input type="hidden" name="token" value="{{ token }}" />
 
                         <p class="text-center">
                             <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
@@ -28,7 +39,9 @@
                     </form>
 
                     <p class="mt-5 mb-3 text-muted text-center">
-                        <a href="index.php?action=create_user">Pas encore inscrit ? Rejoignez-nous en cliquant sur ce lien.</a>
+                        <a href="index.php?action=registration">
+                            Pas encore inscrit ? Rejoignez-nous en cliquant sur ce lien.
+                        </a>
                     </p>
                 </div>
             </div>

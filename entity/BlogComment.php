@@ -2,7 +2,7 @@
 
 namespace AF\OCP5\Entity;
 
-require_once('entity/EntityFeature.php');
+require_once 'entity/EntityFeature.php';
 
 class BlogComment
 {
@@ -22,20 +22,25 @@ class BlogComment
         return $this->_id;
     }
 
-    public function getAuthor() {
+    protected function setId($commentId) {
+        $this->_id = $commentId;
+        return $this;
+    }
+
+    public function getAuthorId() {
         return $this->_author_id;
     }
 
-    public function setAuthor($authorId) {
+    public function setAuthorId($authorId) {
         $this->_author_id = $authorId;
         return $this;
     }
 
-    public function getPost() {
+    public function getPostId() {
         return $this->_post_id;
     }
 
-    public function setPost($postId) {
+    public function setPostId($postId) {
         $this->_post_id = $postId;
         return $this;
     }
@@ -71,7 +76,7 @@ class BlogComment
         return $this->_is_validated;
     }
 
-    public function setIsValidated(bool $isValidated) {
+    public function setIsValidated($isValidated) {
         $this->_is_validated = $isValidated;
         return $this;
     }
@@ -81,7 +86,7 @@ class BlogComment
     }
 
     public function setValidationComment($validationComment) {
-        $this->__validation_comment = $validationComment;
+        $this->_validation_comment = $validationComment;
         return $this;
     }
 }

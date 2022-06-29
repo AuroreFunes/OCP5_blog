@@ -31,12 +31,20 @@
                     </ul>
 
                     <p class="mb-3 text-muted text-center">
-                        <a href="public/assets/file/cv_aurore-funes_developpeur-php.pdf">Voir mon parcours</a>
+                        <a href="public/assets/file/my-cv.pdf">Voir mon parcours</a>
                     </p>
                 </div>
             </div>
 
             <div class="row justify-content-center">
+                {% if messages is not empty %}
+                    <div class="col-md-10 col-lg-8 col-xl-7 mb-3 alert {{ messageClass }}">
+                        {% for message in messages %}
+                            {{ message }}<br />
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <h2>Me contacter ?</h2>
 
@@ -53,14 +61,16 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="pseudo">Votre e-mail :</label>
-                            <input type="mail" name="mail" id="email" class="form-control" placeholder="E-mail" required="">
+                            <label for="mail">Votre e-mail :</label>
+                            <input type="mail" name="mail" id="mail" class="form-control" placeholder="E-mail" required="">
                         </div>
 
                         <div class="mb-3">
                             <label for="message" class="form-label">Votre message :</label>
                             <textarea class="form-control" name="message" id="message" rows="3" required=""></textarea>
                         </div>
+
+                        <input type="hidden" name="token" value="{{ token }}" />
 
                         <p class="text-center">
                             <button type="submit" class="btn btn-primary">M'envoyer votre message</button>

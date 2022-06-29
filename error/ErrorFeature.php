@@ -10,12 +10,13 @@ trait ErrorFeature
         $twig = new \Twig\Environment($loader, ['debug' => true]);
 
         $template = $twig->load('errors/genericErrorPage.html.twig');
-        return $template->render(array(
+        return $template->render([
                 'headerStyle'   => 'background-image: url(\'' . $backgroundUrl .'\');',
                 'pageTitle'     => $pageTitle,
                 'pageSubTitle'  => $pageSubTitle,
                 'title'         => $title,
+                'session'       => $_SESSION,
                 'messages'      => $messages
-                ));
+            ]);
     }
 }

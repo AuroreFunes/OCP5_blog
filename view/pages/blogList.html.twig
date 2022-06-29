@@ -21,7 +21,7 @@
                             {% endif %}
                         </p>
                         <p>
-                            {{ post.caption }}
+                            {{ post.content | slice(0, 20) }}...
                         </p>
                         <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary" href="index.php?action=show_post&id={{ post.id }}">Lire la suite</a></div>
                     </div>

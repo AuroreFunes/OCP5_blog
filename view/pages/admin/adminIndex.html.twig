@@ -1,0 +1,16 @@
+{% extends 'commons/base.html.twig' %}
+{% block title %}Administration{% endblock %}
+
+{% block content %}
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7 mb-3">
+                    <div class="d-grid gap-2 col-8 mx-auto">
+                        <a class="btn btn-primary" href="index.php?action=admin&req=comments_list">
+                            Voir les commentaires en attente</a>
+                        <a class="btn btn-primary" href="index.php?action=admin&req=blog_list">Voir les blog-post</a>
+                        <a class="btn btn-primary" href="index.php?action=admin&req=new_blog_form">Créer un nouveau blog-post</a>
+                    </div>
+                </div>
+            </div>
+{% endblock %}

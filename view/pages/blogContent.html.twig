@@ -23,7 +23,7 @@
                     <h2 class="post-title">Commentaires</h2>
 
                     <!-- Add a comment-->
-                    {% if not session %}
+                    {% if not session.username or not session.user_id %}
                         <p class="post-meta">Vous devez être connecté pour ajouter un commentaire.</p>
                     {% else %}
                         <!-- ajouter le formulaire -->
@@ -35,10 +35,11 @@
                                 <textarea class="form-control" name="comment" id="comment" rows="3" required=""></textarea>
                             </div>
 
+                            <input type="hidden" name="token" value="{{ token }}" />
+
                             <p class="text-center">
                                 <button type="submit" class="btn btn-primary">Publier le commentaire</button>
                             </p>
-
                         </form>
                     {% endif %}
                     
