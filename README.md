@@ -57,7 +57,7 @@ The pages are built from the "Clean Blog" theme proposed by "Start Bootstrap", w
   
 > SMTP_FROM: This is what you will see in the "sender name" when you receive an email from your site.
   
-* Use the SQL file to create the database and tables.
+* Use the SQL file to create the database and tables. Then remove it.
 * An "Admin" user was automatically created when you created the database. The username and email address must be changed as desired directly in the database as the functionality to change them from the site has not yet been implemented.
 
 You are now ready to use your site! The password to access your Admin account is "123Admin!" Remember to change it immediately after installing your site.
