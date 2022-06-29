@@ -37,16 +37,16 @@ The pages are built from the "Clean Blog" theme proposed by "Start Bootstrap", w
 * Open the file "index.html.twig" which is in "view/pages" to replace the links to your own social networks. You can remove or add them by copying one of the <li> blocks like the one starting on line 15.
 * At the command prompt, go to the root directory of the project and use the "compose-install" command to install the dependencies.
 * Rename the ".env.example" file to ".env" and fill in the variables with your own parameters:
-** HOST: is the location of your database
-** DB_NAME: is the name of your database. If you haven't made any changes, it should be "ocp5_blog".
-** DB_USER: is the name of the user who is allowed to access your database. It depends on the configuration of your environment.
-** DB_PASSWORD: this is the password of the user who is allowed to access your database. It depends on the configuration of your environment.
-** SMTP_HOST: this is the address of your SMTP server
-** SMTP_PORT: this is the port used by your SMTP server. By default this should be 587
-** SMTP_SECURE: This is the type of security used by your SMTP server
-** SMTP_MAIL: this is the email address to which messages from your contact form will be sent
-** SMTP_PWD: this is the password used by your SMTP server
-** SMTP_FROM: This is what you will see in the "sender name" when you receive an email from your site.
+> HOST: is the location of your database
+> DB_NAME: is the name of your database. If you haven't made any changes, it should be "ocp5_blog".
+> DB_USER: is the name of the user who is allowed to access your database. It depends on the configuration of your environment.
+> DB_PASSWORD: this is the password of the user who is allowed to access your database. It depends on the configuration of your environment.
+> SMTP_HOST: this is the address of your SMTP server
+> SMTP_PORT: this is the port used by your SMTP server. By default this should be 587
+> SMTP_SECURE: This is the type of security used by your SMTP server
+> SMTP_MAIL: this is the email address to which messages from your contact form will be sent
+> SMTP_PWD: this is the password used by your SMTP server
+> SMTP_FROM: This is what you will see in the "sender name" when you receive an email from your site.
 * Use the SQL file to create the database and tables.
 * An "Admin" user was automatically created when you created the database. The username and email address must be changed as desired directly in the database as the functionality to change them from the site has not yet been implemented.
 
