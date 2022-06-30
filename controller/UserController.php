@@ -28,7 +28,7 @@ class UserController extends DefaultController {
     public function showConnectionForm()
     {
         // show connection form only if the user is not logged in
-        if (!is_null($this->session->getSession('user_id')) || !is_null($this->session->getSession('username'))) {
+        if (null !== $this->session->getSession('user_id') || null !== $this->session->getSession('username')) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
@@ -49,7 +49,7 @@ class UserController extends DefaultController {
     public function showRegistrationForm()
     {
         // show registration form only if the user is not logged in
-        if (!is_null($this->session->getSession('user_id')) || !is_null($this->session->getSession('username'))) {
+        if (null !== $this->session->getSession('user_id') || null !== $this->session->getSession('username')) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
@@ -71,7 +71,7 @@ class UserController extends DefaultController {
     public function userRegistration()
     {
         // registration is possible only if the user is not logged in
-        if (!is_null($this->session->getSession('user_id')) || !is_null($this->session->getSession('username'))) {
+        if (null !== $this->session->getSession('user_id') || null !== $this->session->getSession('username')) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
@@ -107,7 +107,7 @@ class UserController extends DefaultController {
     public function userConnection()
     {
         // user need not already not logged in
-        if(!is_null($this->session->getSession('user_id')) || !is_null($this->session->getSession('username'))) {
+        if(null !== $this->session->getSession('user_id') || null !== $this->session->getSession('username')) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
@@ -152,7 +152,7 @@ class UserController extends DefaultController {
     public function userLogout()
     {
         // user need not already not logged in
-        if(is_null($this->session->getSession('user_id')) || is_null($this->session->getSession('username'))) {
+        if(null === $this->session->getSession('user_id') || null === $this->session->getSession('username')) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
@@ -177,7 +177,7 @@ class UserController extends DefaultController {
     public function showProfileIndex()
     {
         // user need logged in
-        if(is_null($this->session->getSession('user_id')) || is_null($this->session->getSession('username'))) {
+        if(null === $this->session->getSession('user_id') || null === $this->session->getSession('username')) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
@@ -194,7 +194,7 @@ class UserController extends DefaultController {
     public function changePassword()
     {
         // user need logged in
-        if(is_null($this->session->getSession('user_id')) || is_null($this->session->getSession('username'))) {
+        if(null === $this->session->getSession('user_id') || null === $this->session->getSession('username')) {
             throw new Http405Exception(Http405Exception::DEFAULT_MESSAGE);
             return false;
         }
